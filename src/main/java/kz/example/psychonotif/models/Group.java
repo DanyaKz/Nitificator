@@ -1,4 +1,6 @@
-package kz.example.psychonotif.domain;
+package kz.example.psychonotif.models;
+
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -9,14 +11,16 @@ import javax.persistence.Column;
 import javax.persistence.ManyToMany;
 import java.util.Set;
 import java.util.HashSet;
+
 @Entity
+@Data
 @Table(name = "Groups")
-public class Groups {
+public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "chat_id")
     private Long chatId;
@@ -25,9 +29,12 @@ public class Groups {
     private String groupName;
 
     @ManyToMany(mappedBy = "groups")
-    private Set<Notifications> notifications = new HashSet<>();
+    private Set<Message> notifications = new HashSet<>();
 
-    public Integer getId() {
+    public Group() {
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -39,11 +46,11 @@ public class Groups {
         return groupName;
     }
 
-    public Set<Notifications> getNotifications() {
+    public Set<Message> getNotifications() {
         return notifications;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,7 +62,7 @@ public class Groups {
         this.groupName = groupName;
     }
 
-    public void setNotifications(Set<Notifications> notifications) {
+    public void setNotifications(Set<Message> notifications) {
         this.notifications = notifications;
     }
 }

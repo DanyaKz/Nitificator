@@ -5,6 +5,79 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="|Hello, ${name}!|" />
+
+<table>
+
+  <div>
+    <form method="post">
+      <input type="text" name = "text", placeholder="Enter text...">
+      <label for="deadline">Deadline :</label>
+      <input type="datetime-local" id="deadline" name="deadline">
+
+      <div id="container">
+        <div id="availableGroups">
+          <select id="availableList" multiple name="groups">
+            <option th:each="group : ${groupList}" th:value="${group}" th:text="${group.getGroupName()}"></option>
+          </select>
+        </div>
+        <div id="selectedGroups">
+          <select id="selectedList" multiple name="groups">
+          </select>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+
+  <tr>
+    <th>N</th>
+    <th>Date</th>
+    <th>Message</th>
+    <th>Deadline</th>
+    <th>Is relevant</th>
+    <th>Number of notifications</th>
+    <th>Groups</th>
+
+
+  </tr>
+  <tr th:each="notification , iter : ${notifications}">
+    <td th:text="${#numbers.sequence(1, #lists.size(notifications))[__${iter.index}__]}"></td>
+    <td th:text="${notification.getSendingDate()}"></td>
+    <td th:text="${notification.getMessage()}"></td>
+    <td th:text="${notification.getDeadline()}"></td>
+    <td th:text="${notification.getRelevant() ? 'yes' : 'no'}"></td>
+    <td th:text="${notification.getNumOfNotif}"></td>
+    <td>
+      <span th:each="group, groupIndex : ${notification.getGroups()}">
+        <span th:text="${group.getGroupName()}"></span>
+        <span th:if="${groupIndex != #lists.size(notification.groups) - 1}">, </span>
+      </span>
+    </td>
+
+  </tr>
+</table>
+
+
+<script>
+  const availableList = document.getElementById("availableList");
+  const selectedList = document.getElementById("selectedList");
+
+  availableList.addEventListener("click", function() {
+    moveSelectedOptions(availableList, selectedList);
+  });
+
+  selectedList.addEventListener("click", function() {
+    moveSelectedOptions(selectedList, availableList);
+  });
+
+  function moveSelectedOptions(sourceList, destinationList) {
+    const selectedOptions = Array.from(sourceList.selectedOptions);
+    selectedOptions.forEach(option => {
+      destinationList.appendChild(option);
+    });
+  }
+</script>
+
 </body>
 </html>

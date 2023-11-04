@@ -1,4 +1,6 @@
-package kz.example.psychonotif.domain;
+package kz.example.psychonotif.models;
+
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,41 +18,52 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "Notifications")
-public class Notifications {
+@Data
+@Table(name = "Messages")
+public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
-    @Column(name = "message")
-    private String message;
+    @Column(name = "text")
+    private String text;
 
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
-    @Column(name = "is_relevant")
+    @Column(name = "is_relevant", columnDefinition = "BOOLEAN DEFAULT 1")
     private Boolean isRelevant;
 
-    @Column(name = "sending_date")
+    @Column(name = "sending_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime sendingDate;
 
-    @Column(name = "sending_count")
-    private Integer sendingCount;
+    @Column(name = "num_of_notif", columnDefinition = "INTEGER DEFAULT 3")
+    private Integer numOfNotif;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "Notifications_Groups",
             joinColumns = @JoinColumn(name = "notif_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private Set<Groups> groups = new HashSet<>();
+    private Set<Group> groups = new HashSet<>();
 
-    public Integer getId() {
+
+    public Message() {
+    }
+
+    public Message(String text, LocalDateTime deadline, Set<Group> groups) {
+        this.text = text;
+        this.deadline = deadline;
+        this.groups = groups;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
     public LocalDateTime getDeadline() {
@@ -65,20 +78,20 @@ public class Notifications {
         return sendingDate;
     }
 
-    public Integer getSendingCount() {
-        return sendingCount;
+    public Integer getNumOfNotif() {
+        return numOfNotif;
     }
 
-    public Set<Groups> getGroups() {
+    public Set<Group> getGroups() {
         return groups;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void setDeadline(LocalDateTime deadline) {
@@ -93,11 +106,11 @@ public class Notifications {
         this.sendingDate = sendingDate;
     }
 
-    public void setSendingCount(Integer sendingCount) {
-        this.sendingCount = sendingCount;
+    public void setNumOfNotif(Integer numOfNotif) {
+        this.numOfNotif = numOfNotif;
     }
 
-    public void setGroups(Set<Groups> groups) {
+    public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
 
