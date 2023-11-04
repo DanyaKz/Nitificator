@@ -48,69 +48,12 @@ public class Message {
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> groups = new HashSet<>();
 
-
     public Message() {
     }
 
     public Message(String text, LocalDateTime deadline, Set<Group> groups) {
         this.text = text;
         this.deadline = deadline;
-        this.groups = groups;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public LocalDateTime getDeadline() {
-        return deadline;
-    }
-
-    public Boolean getRelevant() {
-        return isRelevant;
-    }
-
-    public LocalDateTime getSendingDate() {
-        return sendingDate;
-    }
-
-    public Integer getNumOfNotif() {
-        return numOfNotif;
-    }
-
-    public Set<Group> getGroups() {
-        return groups;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = deadline;
-    }
-
-    public void setRelevant(Boolean relevant) {
-        isRelevant = relevant;
-    }
-
-    public void setSendingDate(LocalDateTime sendingDate) {
-        this.sendingDate = sendingDate;
-    }
-
-    public void setNumOfNotif(Integer numOfNotif) {
-        this.numOfNotif = numOfNotif;
-    }
-
-    public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
 

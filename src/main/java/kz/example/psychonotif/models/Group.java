@@ -34,35 +34,4 @@ public class Group {
     public Group() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public Set<Message> getNotifications() {
-        return notifications;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public void setNotifications(Set<Message> notifications) {
-        this.notifications = notifications;
-    }
 }

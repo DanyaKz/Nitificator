@@ -4,6 +4,9 @@ import kz.example.psychonotif.models.Group;
 import kz.example.psychonotif.models.Message;
 import kz.example.psychonotif.repository.GroupRepo;
 import kz.example.psychonotif.repository.MessageRepo;
+import kz.example.psychonotif.services.GroupService;
+import kz.example.psychonotif.services.MessageService;
+import kz.example.psychonotif.services.impl.MessageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,16 +20,17 @@ import java.util.Set;
 
 @Controller
 public class MainPage {
-    @Autowired(required=false)
-    private MessageRepo messageRepo;
-    @Autowired(required=false)
-    private GroupRepo groupRepo;
+
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private GroupService groupService;
 
     @GetMapping("/")
     public String greeting(Model model) {
-        Iterable<Message> notifications = messageRepo.findAll();
+        Iterable<Message> notifications = messageService.findAll();
         model.addAttribute("notifications", notifications);
-        model.addAttribute("groups", groupRepo);
+        model.addAttribute("groups", groupService.findAll());
         return "index";
     }
 
@@ -35,11 +39,11 @@ public class MainPage {
                       @RequestParam Set<Group> groups, Map<String, Object> model){
 
         Message notification = new Message(message, deadline, groups);
-        messageRepo.save(notification);
+        messageService.save(notification);
 
-        Iterable<Message> notifications = messageRepo.findAll();
+        Iterable<Message> notifications = messageService.findAll();
         model.put("notifications", notifications);
-        model.put("groups", groupRepo);
+        model.put("groups", groupService.findAll());
 
         return "index";
     }

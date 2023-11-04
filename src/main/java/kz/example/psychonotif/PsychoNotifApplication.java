@@ -7,8 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "kz.example.psychonotif.models")
-
+@EnableJpaRepositories("kz.example.psychonotif.repository")
 public class PsychoNotifApplication {
 
     public static void main(String[] args) {
