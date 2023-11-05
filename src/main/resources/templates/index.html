@@ -17,7 +17,7 @@
       <div id="container">
         <div id="availableGroups">
           <select id="availableList" multiple name="groups">
-            <option th:each="group : ${groupList}" th:value="${group}" th:text="${group.getGroupName()}"></option>
+            <option th:each="group : ${groupList}" th:value="${group.getId()}" th:text="${group.getGroupName()}"></option>
           </select>
         </div>
         <div id="selectedGroups">
@@ -25,7 +25,7 @@
           </select>
         </div>
       </div>
-
+    <button type="submit">Submit</button>
     </form>
   </div>
 
@@ -43,15 +43,15 @@
   </tr>
   <tr th:each="notification , iter : ${notifications}">
     <td th:text="${#numbers.sequence(1, #lists.size(notifications))[__${iter.index}__]}"></td>
-    <td th:text="${notification.getSendingDate()}"></td>
-    <td th:text="${notification.getMessage()}"></td>
-    <td th:text="${notification.getDeadline()}"></td>
-    <td th:text="${notification.getRelevant() ? 'yes' : 'no'}"></td>
-    <td th:text="${notification.getNumOfNotif}"></td>
+    <td th:text="${notification.sendingDate}"></td>
+    <td th:text="${notification.text}"></td>
+    <td th:text="${notification.deadline}"></td>
+    <td th:text="${notification.isRelevant ? 'yes' : 'no'}"></td>
+    <td th:text="${notification.numOfNotif}"></td>
     <td>
-      <span th:each="group, groupIndex : ${notification.getGroups()}">
-        <span th:text="${group.getGroupName()}"></span>
-        <span th:if="${groupIndex != #lists.size(notification.groups) - 1}">, </span>
+      <span th:each="group, groupIndex : ${notification.subscribers}">
+        <span th:text="${group.groupName}"></span>
+        <span th:if="${groupIndex.index !=  groupIndex.size - 1} ">, </span>
       </span>
     </td>
 

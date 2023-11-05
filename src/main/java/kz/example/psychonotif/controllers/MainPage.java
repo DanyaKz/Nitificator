@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -30,22 +31,19 @@ public class MainPage {
     public String greeting(Model model) {
         Iterable<Message> notifications = messageService.findAll();
         model.addAttribute("notifications", notifications);
-        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("groupList", groupService.findAll());
         return "index";
     }
 
     @PostMapping
-    public String add(@RequestParam String message, @RequestParam LocalDateTime deadline,
-                      @RequestParam Set<Group> groups, Map<String, Object> model){
+    public RedirectView add(@RequestParam String text, @RequestParam LocalDateTime deadline,
+                      @RequestParam Set<Long> groups){
 
-        Message notification = new Message(message, deadline, groups);
+        System.out.println(groupService.findExistById(groups));
+        Message notification = new Message(text, deadline, groupService.findExistById(groups));
         messageService.save(notification);
 
-        Iterable<Message> notifications = messageService.findAll();
-        model.put("notifications", notifications);
-        model.put("groups", groupService.findAll());
-
-        return "index";
+        return new RedirectView("/");
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "Groups")
+@Table(name = "Student_Groups")
 public class Group {
 
     @Id
@@ -21,9 +21,6 @@ public class Group {
 
     @Column(name = "group_name")
     private String groupName;
-
-    @ManyToMany(mappedBy = "groups")
-    private Set<Message> notifications = new HashSet<>();
 
     public Group() {
     }
