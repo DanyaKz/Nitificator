@@ -35,7 +35,7 @@ public class MainPage {
         return "index";
     }
 
-    @PostMapping
+    @PostMapping("/")
     public RedirectView add(@RequestParam String text, @RequestParam LocalDateTime deadline,
                       @RequestParam Set<Long> groups){
 
