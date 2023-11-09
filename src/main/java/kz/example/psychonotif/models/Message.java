@@ -47,6 +47,11 @@ public class Message {
     public Message() {
     }
 
+    public Message(String text, Set<Group> subscribers) {
+        this.text = text;
+        this.subscribers = subscribers;
+    }
+
     public Message(String text, LocalDateTime deadline, Set<Group> groups) {
         this.text = text;
         this.deadline = deadline;
