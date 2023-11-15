@@ -30,7 +30,7 @@ public class Message {
     private LocalDateTime sendingDate = LocalDateTime.now();
 
     @Column(name = "num_of_notif")
-    private Integer numOfNotif = 3;
+    private Integer numOfNotif = 1;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "Notifications_Groups",
@@ -52,10 +52,10 @@ public class Message {
         this.subscribers = subscribers;
     }
 
-    public Message(String text, LocalDateTime deadline, Set<Group> groups) {
+    public Message(String text, LocalDateTime deadline, Boolean isRelevant, Set<Group> subscribers) {
         this.text = text;
         this.deadline = deadline;
-        this.subscribers = groups;
+        this.isRelevant = isRelevant;
+        this.subscribers = subscribers;
     }
-
 }

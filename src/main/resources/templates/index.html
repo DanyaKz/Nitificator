@@ -1,42 +1,62 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-      xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-  <title>Getting Started: Serving Web Content</title>
+  <title>Main Page</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!--  <link rel="stylesheet" th:href="@{../static/styles.css}" type="text/css">-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css}"
+        rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+
 
 </head>
 <body>
-
-
-<h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
-<form th:action="@{/logout}" method="post">
-  <input type="submit" value="Sign Out"/>
-</form>
-
+  
+  <form th:action="@{/logout}" method="post" id = "logoutForm">
+    <p>Nice to meet you, <span th:text="${#authentication.principal.username}"></span> !</p>
+    <input class="btn btn-outline-secondary" type="submit" value="Sign Out"/>
+  </form>
 
   <div>
-    <form th:action="@{/}" method="post">
-      <input type="text" name = "text", placeholder="Enter text...">
-      <label for="deadline">Deadline :</label>
-      <input type="datetime-local" id="deadline" name="deadline">
+    <form id="sendMsg" th:action="@{/}" method="post">
 
-      <div id="container">
+      <div class = "container" id = "msgContainer">
+        <div id = "msgSubContainer">
+          <label>Your message</label>
+          <textarea id="message" name = "text" placeholder="Enter text..."></textarea>
+        </div>
+      </div>
+
+      <div class="container" id = "groupsContainer">
+        <div id="selectedGroups">
+          <label>Selected Groups</label>
+          <select id="selectedList" multiple name="groups">
+          </select>
+        </div>
         <div id="availableGroups">
+          <label>Available Groups</label>
           <select id="availableList" multiple name="groups">
             <option th:each="group : ${groupList}" th:value="${group.getId()}" th:text="${group.getGroupName()}"></option>
           </select>
         </div>
-        <div id="selectedGroups">
-          <select id="selectedList" multiple name="groups">
-          </select>
-        </div>
       </div>
-    <button type="submit">Submit</button>
+
+      <div class="btnContainer">
+        <div id = "deadlineContainer">
+          <button id="toggleButton" class="btn btn-outline-primary">Toggle Deadline</button>
+          <input class="btn btn-outline-primary" type="datetime-local" id="deadline" name="deadline">
+        </div>
+
+        <button id = "btnSubmit" class="btn btn-outline-success" onclick="fillModal()"
+                type="button" data-bs-toggle="modal" data-bs-target="#modalApproveId">Preview</button>
+
+      </div>
+
+
+
     </form>
   </div>
+
 
 <table>
   <tr>
@@ -47,14 +67,13 @@
     <th>Is relevant</th>
     <th>Number of notifications</th>
     <th>Groups</th>
-
-
   </tr>
+
   <tr th:each="notification , iter : ${notifications}">
     <td th:text="${#numbers.sequence(1, #lists.size(notifications))[__${iter.index}__]}"></td>
     <td th:text="${notification.sendingDate}"></td>
     <td th:text="${notification.text}"></td>
-    <td th:text="${notification.deadline}"></td>
+    <td th:text="${notification.deadline != null ? notification.deadline : 'Absent'}"></td>
     <td th:text="${notification.isRelevant ? 'yes' : 'no'}"></td>
     <td th:text="${notification.numOfNotif}"></td>
     <td>
@@ -63,30 +82,113 @@
         <span th:if="${groupIndex.index !=  groupIndex.size - 1} ">, </span>
       </span>
     </td>
-
   </tr>
+
 </table>
 
 
-<script>
-  const availableList = document.getElementById("availableList");
-  const selectedList = document.getElementById("selectedList");
+  <div class="modal" tabindex="-1" id = "modalApproveId"
+       th:include = "modalApprove :: modalApproveName"></div>
 
-  availableList.addEventListener("click", function() {
-    moveSelectedOptions(availableList, selectedList);
-  });
 
-  selectedList.addEventListener("click", function() {
-    moveSelectedOptions(selectedList, availableList);
-  });
+  <script>
 
-  function moveSelectedOptions(sourceList, destinationList) {
-    const selectedOptions = Array.from(sourceList.selectedOptions);
-    selectedOptions.forEach(option => {
-      destinationList.appendChild(option);
+    const availableList = document.getElementById("availableList");
+    const selectedList = document.getElementById("selectedList");
+
+    availableList.addEventListener("click", function() {
+      moveSelectedOptions(availableList, selectedList);
     });
+
+    selectedList.addEventListener("click", function() {
+      moveSelectedOptions(selectedList, availableList);
+    });
+
+    function moveSelectedOptions(sourceList, destinationList) {
+      const selectedOptions = Array.from(sourceList.selectedOptions);
+      selectedOptions.forEach(option => {
+        const clonedOption = new Option(option.text, option.value);
+        destinationList.add(clonedOption);
+        option.remove();
+      });
+    }
+
+    //  ----------------------------------------------------
+
+    document.getElementById('toggleButton').addEventListener('click', function(event) {
+  event.preventDefault();
+  var deadlineInput = document.getElementById('deadline');
+  if (deadlineInput.style.visibility === '' ||
+          deadlineInput.style.visibility === 'hidden') {
+    deadlineInput.style.visibility = 'visible';
+    deadlineInput.style.opacity = '1';
+  } else {
+    deadlineInput.style.visibility = 'hidden';
+    deadlineInput.style.opacity = '0';
   }
-</script>
+});
+
+    //  ----------------------------------------------------
+
+
+    function fillModal(){
+      const textInput = document.querySelector('textarea[name="text"]');
+      var msg = "Your message: ";
+      const myButton = document.getElementById('commitFinalReview');
+      var options = getSelectedOptions();
+      myButton.disabled = false;
+
+      if (textInput.value.trim() === '') {
+        msg += `<span style="color: red;">Please fill in the "text" field !</span><br>`
+        myButton.disabled = true;
+      }else {
+        msg += textInput.value;
+      }
+
+      msg += `<br>Selected groups: `;
+
+      if (options.length === 0) {
+        msg += `<span style="color: red;">Please, select at least one group !</span><br>`
+        myButton.disabled = true;
+      }else {
+        for (var i = 0, l = options.length; i < l; i++) {
+          msg += options[i].text;
+          if (i !== options.length - 1) {
+            msg += ", ";
+          }
+        }
+      }
+
+      msg += `<br>Deadline: `;
+      var deadline = document.getElementById("deadline").value;
+      if (deadline === ""){
+          msg += "Absent";
+      }else {
+        msg += deadline;
+      }
+      document.getElementById("messageApprovedText").innerHTML = msg;
+    }
+
+    function submitForm() {
+      var options = getSelectedOptions();
+      for (var i = 0, l = options.length; i < l; i++) {
+        options[i].selected = true;
+      }
+      // document.getElementById("modalApproveId").style.display = "none";
+      document.getElementById("sendMsg").submit();
+    }
+
+    function getSelectedOptions(){
+      var select = document.querySelector("#selectedList");
+      console.log(select.options);
+      return select.options;
+    }
+
+  </script>
+
+  <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js}"
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+          crossorigin="anonymous"></script>
 
 </body>
 </html>

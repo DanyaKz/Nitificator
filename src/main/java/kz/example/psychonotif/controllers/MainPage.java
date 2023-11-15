@@ -4,6 +4,7 @@ import kz.example.psychonotif.models.Group;
 import kz.example.psychonotif.models.Message;
 import kz.example.psychonotif.services.GroupService;
 import kz.example.psychonotif.services.MessageService;
+import kz.example.psychonotif.services.Notificator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,8 +42,9 @@ public class MainPage {
         Set<Group> groupList = groupService.findExistById(groups);
 
         Message notification = deadline.map(
-                localDateTime -> new Message(text, localDateTime, groupList))
+                localDateTime -> new Message(text, localDateTime, false, groupList))
                 .orElseGet(() -> new Message(text, groupList));
+
         messageService.save(notification);
 
         notify = new Notificator(

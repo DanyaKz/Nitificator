@@ -4,6 +4,7 @@ import kz.example.psychonotif.models.Message;
 import kz.example.psychonotif.repository.MessageRepo;
 import kz.example.psychonotif.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> findAll() {
-        return messageRepo.findAll();
+        return messageRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Override

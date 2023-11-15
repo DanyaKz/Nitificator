@@ -1,6 +1,7 @@
-
 form {
   border: 3px solid #f1f1f1;
+  width: 40%;
+  margin: 0 auto;
 }
 
 input[type=text], input[type=password] {
@@ -29,16 +30,19 @@ button:hover {
 
 
 .container {
-  padding: 16px;
+  padding: 2rem;
 }
 
 span.psw {
   padding-top: 16px;
 }
 
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 600px) {
   span.psw {
     display: block;
     float: none;
+  }
+  form {
+    width: 100%;
   }
 }

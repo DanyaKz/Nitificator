@@ -1,4 +1,4 @@
-package kz.example.psychonotif.controllers;
+package kz.example.psychonotif.services;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -26,7 +26,7 @@ public class Notificator {
     }
 
     private String constructMessage(){
-        String message = "Новое уведомление!%0A" + this.message + "%0AДедлайн: ";
+        String message = "Новое уведомление!%0A" + this.message.replace("\n", "%0A") + "%0AДедлайн: ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         message += deadline.isPresent() ? deadline.get().format(formatter) : "отсутствует." ;
         return message;
